@@ -1,0 +1,46 @@
+{% extends 'cinema/base.html' %}
+
+{% block title %}Booking Page{% endblock %}
+
+{% block content %}
+    {% if messages %}
+        {% for message in messages %}
+            {% if message.tags == 'error' %}
+                <div class="error-message">{{ message }}</div>
+            {% endif %}
+        {% endfor %}
+
+        {% for message in messages %}
+            {% if message.tags == 'success' %}
+                <div class="success-message" style="color: limegreen; margin-bottom: 5px">{{ message }}</div>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+    <div class="container">
+        <div class="session-details d-flex">
+            <div class="session-image-container">
+                <img src="{{ session.film.image.url}}" alt="{{ session.film.name }}" class="session-image-v2">
+            </div>
+            <div class="session-info">
+                <h1>{{session.film.name}}</h1>
+                <br>
+                <p class="session-price">Genre: {{ session.film.genre }}</p>
+                <p class="session-date">{{ session.start_date|date:"M d" }} - {{ session.end_date|date:"M d, Y" }}</p>
+                <p class="session-time">{{ session.start_time|time:"H:i" }} - {{ session.end_time|time:"H:i" }}</p>
+                <p class="session-time">{{ session.hall.name }}</p>
+                <p class="session-price">Price: ${{ session.price }}</p>
+                <br>
+                <p class="session-time session-button" style="margin-left: 30px;">Available seats: {{ available_seats }}</p>
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="number" name="count_of_tickets" class="form-control" style="width: 71%; display: inline-block;" placeholder="Enter count of tickets" min="1" required>
+                    <button type="submit" class="btn btn-primary login-button" style="margin-bottom: 4px;">Book</button>
+                </form>
+                <br>
+
+                <a href="{% url 'schedule_page' %}" class="nav_link_px_login">Cancel booking</a>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}

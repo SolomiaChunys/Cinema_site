@@ -1,0 +1,41 @@
+{% extends 'cinema/base.html' %}
+
+{% block title %}Create Film{% endblock %}
+
+{% block content %}
+
+    {% if messages %}
+        {% for message in messages %}
+            {% if message.tags == 'success' %}
+                <div class="success-message" style="color: limegreen; margin-bottom: 5px">{{ message }}</div>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+
+    <div class="features">
+        <h1>Create Film</h1>
+        <br>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            {{ form.name }}<br>
+            {% for error in form.name.errors %}
+                <p class="error-message">{{ error }}</p>
+            {% endfor %}
+
+            {{ form.genre }}<br>
+            {% for error in form.genre.errors %}
+                <p class="error-message">{{ error }}</p>
+            {% endfor %}
+
+            {{ form.image }}<br>
+            {% for error in form.image.errors %}
+                <p class="error-message">{{ error }}</p>
+            {% endfor %}
+
+            <button class="btn btn-primary login-button" type="submit">Create</button>
+        </form>
+
+    <a href="{% url 'schedule_page' %}" class="nav_link_px_login">Cancel creation</a>
+    </div>
+{% endblock %}

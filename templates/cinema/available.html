@@ -1,0 +1,12 @@
+{% if available_seats == 0 %}
+    <form method="get" action="{% url 'schedule_page' %}">
+        <input type="submit" name="sold_message" class="btn btn-secondary session-button" value="Sold">
+        <p class="session-time session-button">Available seats: {{ available_seats }}</p>
+    </form>
+{% else %}
+    <form method="post" action="{% url 'book_ticket' session.pk date_filter %}">
+        {% csrf_token %}
+        <input type="submit" class="btn btn-warning session-button login-button" value="Book">
+        <p class="session-time session-button">Available seats: {{ available_seats }}</p>
+    </form>
+{% endif %}
