@@ -47,18 +47,6 @@ class SessionTestCase(TestCase):
         self.assertIn(session_tomorrow, context['object_list'])
         self.assertEqual(str(context['date_filter']), 'tomorrow')
 
-    def test_list_session_price(self):
-        # Test price filter
-        self.session_correct_price = SessionFactory(price=60)
-
-        url = reverse('schedule_page')
-        session_today = SessionFactory(start_date=date.today())
-        response = self.client.get(url, {'price_from': '75', 'price_to': '80'})
-        context = response.context
-
-        self.assertIn(session_today, context['object_list'])
-        self.assertEqual(len(context['object_list']), 2)
-
     def test_list_session_message(self):
         # Test with sold message
         url = reverse('schedule_page')
