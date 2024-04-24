@@ -1,0 +1,29 @@
+{% extends 'cinema/base.html' %}
+
+{% block title %}Log In{% endblock %}
+
+{% block content %}
+    <div class="features">
+        <h1>Log In</h1>
+        <br>
+        <form method="post">
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+                <ul>
+                    {% for error in form.non_field_errors %}
+                        <li class="error-message">{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
+            {{ form.username }}
+            <br>
+            {{ form.password }}
+            <br>
+
+            <button class="btn btn-primary login-button" type="submit">LOGIN</button>
+        </form>
+        <a href="{% url 'signup_page' %}" class="nav_link_px_login">Does not have an account?</a>
+    </div>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends 'cinema/base.html' %}
+
+{% block title %}Update Hall{% endblock %}
+
+{% block content %}
+    <div class="features">
+        <h1>Update Hall</h1>
+
+        <br>
+        <form method="post">
+
+            {% if form.non_field_errors %}
+                <ul>
+                    {% for error in form.non_field_errors %}
+                        <li class="error-message">{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
+            {% csrf_token %}
+            {{ form.name }}
+            <br>
+            {{ form.size }}
+            <br>
+            <button class="btn btn-primary login-button" type="submit">Update</button>
+        </form>
+    <a href="{% url 'schedule_page' %}" class="nav_link_px_login">Cancel update</a>
+    </div>
+{% endblock %}

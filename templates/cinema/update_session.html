@@ -1,0 +1,39 @@
+{% extends 'cinema/base.html' %}
+
+{% block title %}Update Session{% endblock %}
+
+{% block content %}
+    <div class="features">
+        <h1>Update Session</h1>
+
+        <br>
+        <form method="post">
+
+            {% if form.non_field_errors %}
+                <ul>
+                    {% for error in form.non_field_errors %}
+                        <li class="error-message">{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
+            {% csrf_token %}
+            {{ form.film }}
+            <br>
+            {{ form.hall }}
+            <br>
+            {{ form.price }}
+            <br>
+            {{ form.start_time }}
+            <br>
+            {{ form.end_time }}
+            <br>
+            {{ form.start_date }}
+            <br>
+            {{ form.end_date }}
+            <br>
+            <button class="btn btn-primary login-button" type="submit">Update</button>
+        </form>
+    <a href="{% url 'schedule_page' %}" class="nav_link_px_login">Cancel update</a>
+    </div>
+{% endblock %}

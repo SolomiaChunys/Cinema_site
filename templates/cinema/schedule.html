@@ -1,0 +1,125 @@
+{% extends 'cinema/base.html' %}
+
+{% block title %}Cinema Page{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-2 col-12 sidebar">
+            <div class="sidebar-navigation">
+
+                <h4>Filter:</h4>
+
+                <hr>
+
+                <form method="GET" action="{% url 'schedule_page' %}">
+                    <h5>By Day</h5>
+                    <label class="btn btn-secondary nav-link">
+                        <input type="radio" name="date-filter" value="today" {% if date_filter == 'today' %}checked{% endif %}>
+                        Today
+                    </label>
+                    <label class="btn btn-secondary nav-link">
+                        <input type="radio" name="date-filter" value="tomorrow" {% if date_filter == 'tomorrow' %}checked{% endif %}>
+                        Tomorrow
+                    </label>
+                    <button type="submit" class="btn btn-primary login-button">Filter</button>
+                </form>
+
+                <hr>
+
+                <form method="GET" action="{% url 'schedule_page' %}">
+                    <input type="hidden" name="date-filter" value="{{ date_filter }}">
+                    <h5>By Price</h5>
+                    <input type="number" name="price_from" class="form-control" placeholder="From" min="0" required>
+                    <input type="number" name="price_to" class="form-control" placeholder="To" min="0" required>
+                    <button type="submit" class="btn btn-success login-button">Filter</button>
+                </form>
+
+                <hr>
+
+                <form method="GET" action="{% url 'schedule_page' %}">
+                    <h5>By Time</h5>
+                    <input type="hidden" name="time-filter" value="end_time">
+                    <label class="btn btn-secondary nav-link">
+                        <input type="radio" name="time-filter" value="start_time"> Early time
+                    </label>
+                    <label class = "btn btn-secondary nav-link">
+                        <input type="radio" name="time-filter" value="end_time"> Late time
+                    </label>
+                    <button type="submit" class="btn btn-primary login-button">Sort by Time</button>
+                </form>
+
+            </div>
+        </div>
+        <div class="col-md-10 col-12 main-content">
+            <div class="main-content">
+                <h2 style="margin-left: 70px;">Schedule</h2>
+
+                {% if messages %}
+                    {% for message in messages %}
+                        {% if message.tags == 'error' %}
+                            <div class="error-message" style="margin-left: 70px;">{{ message }}</div>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% for message in messages %}
+                        {% if message.tags == 'success' %}
+                            <div class="success-message" style="color: limegreen; margin-bottom: 5px; margin-left: 70px;">{{ message }}</div>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+
+                <div class="session-list">
+                    <ul>
+                        {% for session in object_list %}
+                            <li class="session">
+
+                                <img src="{{ session.film.image.url }}" alt="{{ session.film.name }}" class="session-image" />
+                                <div class="session-info">
+                                    <h3 class="session-title">{{ session.film.name }}</h3>
+                                    <p class="session-date">{{ session.start_date|date:"M d" }} - {{ session.end_date|date:"M d, Y" }}</p>
+                                    <p class="session-time">{{ session.start_time|time:"H:i" }} - {{ session.end_time|time:"H:i" }}</p>
+                                    <p class="session-time">{{ session.hall.name }}</p>
+                                    <p class="session-price">Price: ${{ session.price }}</p>
+                                </div>
+
+                                {% if user.is_superuser %}
+
+                                <div class="update-button">
+                                    <div class="session-button-wrapper">
+                                        <form method="get" action="{% url 'update_session' session.pk %}">
+                                            {% csrf_token %}
+                                            <input type="submit" class="btn btn-warning session-button login-button" value="Update Session">
+                                        </form>
+                                    </div>
+                                    <br>
+                                    <div class="session-button-wrapper">
+                                        <form method="get" action="{% url 'update_hall' session.hall.pk %}">
+                                            {% csrf_token %}
+                                            <input type="submit" class="btn btn-warning session-button login-button" value="Update Hall">
+                                        </form>
+                                    </div>
+                                </div>
+
+                                {% elif user.is_active %}
+
+                                    {% if date_filter == 'today' %}
+                                        {% with available_seats=session.available_today %}
+                                            {% include 'cinema/available.html' %}
+                                        {% endwith %}
+                                    {% elif date_filter == 'tomorrow' %}
+                                        {% with available_seats=session.available_tomorrow %}
+                                            {% include 'cinema/available.html' %}
+                                        {% endwith %}
+                                    {% endif %}
+
+                                {% endif %}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
