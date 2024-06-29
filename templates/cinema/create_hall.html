@@ -21,7 +21,10 @@
             {% for error in form.name.errors %}
                 <p class="error-message">{{ error }}</p>
             {% endfor %}
+
+            <label for="id_name">Enter Hall Name:</label><br>
             {{ form.name }}<br>
+            <label for="id_size">Enter Hall Size:</label><br>
             {{ form.size }}<br>
 
             <button class="btn btn-primary login-button" type="submit">Create</button>

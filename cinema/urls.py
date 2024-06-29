@@ -13,5 +13,6 @@ urlpatterns = [
     path('update/hall/<int:pk>/', views.HallUpdatePage.as_view(), name='update_hall'),
     path('book/ticket/<int:pk>/<str:date_filter>/', views.TicketBookPage.as_view(), name='book_ticket'),
     path('booked/tickets/', views.BookedTicketsPage.as_view(), name='booked_tickets'),
+    path('api/halls/', views.hall_list_api, name='hall_list_api'),
     path('', views.SchedulePage.as_view(), name='schedule_page'),
 ]

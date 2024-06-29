@@ -18,8 +18,11 @@
             {% endif %}
 
             {% csrf_token %}
+            <label for="id_name">Enter Hall Name:</label><br>
             {{ form.name }}
             <br>
+
+            <label for="id_size">Enter Hall Size:</label><br>
             {{ form.size }}
             <br>
             <button class="btn btn-primary login-button" type="submit">Update</button>

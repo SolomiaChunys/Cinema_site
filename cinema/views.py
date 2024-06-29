@@ -5,6 +5,7 @@ from datetime import date, timedelta, datetime
 from django.shortcuts import redirect
 from django.contrib.auth import login
 from django.urls import reverse_lazy
+from django.http import JsonResponse
 from django.contrib import messages
 from django.utils import timezone
 from django.db.models import F
@@ -208,14 +209,21 @@ class HallUpdatePage(AdminRequiredMixin, UpdateView):
 
     def form_valid(self, form):
         hall_pk = self.kwargs['pk']
+        today = date.today()
 
-        bought_tickets = Ticket.objects.filter(session__hall__pk=hall_pk).count()
+        bought_tickets = Ticket.objects.filter(session__hall__pk=hall_pk, session__end_date__gt=today).count()
 
         if bought_tickets > 0:
             messages.error(self.request, 'Tickets have already been booked in this hall!')
             return redirect('schedule_page')
 
         return super().form_valid(form=form)
+
+
+# LIST OF HALLS (JSON)
+def hall_list_api(request):
+    halls = CinemaHall.objects.values('id', 'name')
+    return JsonResponse({'halls': list(halls)})
 
 
 # BOOK TICKETS(USER)

@@ -7,7 +7,7 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>{% block title %}Home Page{% endblock %}</title>
-   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="{% static 'cinema/css/cinema.css' %}">
 </head>
 <body>
@@ -15,11 +15,13 @@
         <div class="elements">
             <ul class="navigation_mar">
                 <li class="line">
-                    <a href="{% url 'schedule_page' %}" class="nav_link_px {% if not user.is_superuser and user.is_active %}active{% endif %}" aria-current="page">Schedule</a></li>
+                    <a href="{% url 'schedule_page' %}" class="nav_link_px {% if not user.is_superuser and user.is_active %}active{% endif %}" aria-current="page">Schedule</a>
+                </li>
                 {% if user.is_superuser %}
                     <li class="line"><a href="{% url 'create_film' %}" class="nav_link_px">Create Film</a></li>
                     <li class="line"><a href="{% url 'create_hall' %}" class="nav_link_px">Create Cinema-Hall</a></li>
                     <li class="line"><a href="{% url 'create_session' %}" class="nav_link_px">Create Session</a></li>
+                    <li class="line"><a href="#" class="nav_link_px" data-bs-toggle="modal" data-bs-target="#updateHallModal">Update Hall</a></li>
                 {% elif user.is_active %}
                     <li class="line"><a href="{% url 'booked_tickets' %}" class="nav_link_px">Booked Tickets</a></li>
                 {% endif %}
@@ -48,5 +50,42 @@
             {% endblock %}
         </div>
     </main>
+
+    <!-- Modal -->
+    <div class="modal fade" id="updateHallModal" tabindex="-1" aria-labelledby="updateHallModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="updateHallModalLabel">Select Hall to Update</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <ul id="hallList">
+                        <!-- List of halls will be loaded here dynamically -->
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Fetch the list of halls and append to the modal
+            fetch("{% url 'hall_list_api' %}")
+                .then(response => response.json())
+                .then(data => {
+                    const hallList = document.getElementById('hallList');
+                    data.halls.forEach(hall => {
+                        const listItem = document.createElement('li');
+                        const link = document.createElement('a');
+                        link.href = `{% url 'update_hall' 0 %}`.replace('0', hall.id);
+                        link.textContent = hall.name;
+                        listItem.appendChild(link);
+                        hallList.appendChild(listItem);
+                    });
+                });
+        });
+    </script>
 </body>
 </html>

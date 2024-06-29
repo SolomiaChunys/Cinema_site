@@ -346,3 +346,32 @@ main .features form {
 .update-button {
   flex-direction: column;
 }
+
+.modal-content {
+    background-color: #2c2c2c;;
+    border-bottom: 1px solid #4d4d4d;
+}
+
+.modal-title {
+    color: whitesmoke;
+}
+
+#hallList {
+    list-style-type: none;
+    padding: 0;
+}
+
+#hallList li {
+    margin: 10px 0;
+}
+
+#hallList li a {
+    text-decoration: none;
+    color: #8c98e7;
+}
+
+#hallList li a:hover {
+    color: #4a59a9;
+    border-color: #4a59a9;
+    text-decoration: underline;
+}
