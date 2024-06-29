@@ -18,11 +18,13 @@
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
 
+            <label for="id_name">Enter Film Name:</label><br>
             {{ form.name }}<br>
             {% for error in form.name.errors %}
                 <p class="error-message">{{ error }}</p>
             {% endfor %}
 
+            <label for="id_genre">Enter Film Genre:</label><br>
             {{ form.genre }}<br>
             {% for error in form.genre.errors %}
                 <p class="error-message">{{ error }}</p>
