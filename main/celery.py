@@ -14,6 +14,6 @@ app.conf.beat_schedule = {
     'delete-expired-seats-every-day': {
         'task': 'cinema.tasks.delete_expired_seats',
         # 'schedule': 15.0,
-        'schedule': crontab(hour='22', minute='17'),
+        'schedule': crontab(hour='22', minute='00'),
     },
 }
