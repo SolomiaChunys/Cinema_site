@@ -1,0 +1,94 @@
+x-environment-defaults: &environment-defaults
+  SECRET_KEY: 'django-insecure-(yir*&!%)jeksen7uf%lqc5vsp(e)+ou%6ivy'
+  DEBUG: 'False'
+  DATABASE_NAME: 'cinema_db'
+  DATABASE_USER: 'myuser'
+  DATABASE_PASSWORD: 'mypass'
+  DATABASE_HOST: 'postgres'
+  DATABASE_PORT: '5432'
+  CELERY_BROKER_URL: 'redis://redis:6379/0'
+  CELERY_RESULT_BACKEND: 'redis://redis:6379/0'
+
+
+services:
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: cinema_db
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypass
+    ports:
+      - '5432:5432'
+    restart: unless-stopped
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    container_name: postgres
+
+  cinema:
+    build:
+      context: .
+    ports:
+      - '8001:8000'
+    depends_on:
+      - postgres
+    restart: unless-stopped
+    environment:
+      <<: *environment-defaults
+    volumes:
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media
+    container_name: cinema
+
+  nginx:
+    image: nginx:latest
+    volumes:
+      - ./conf/nginx.conf:/etc/nginx/nginx.conf
+      - static_volume:/staticfiles
+      - media_volume:/media
+    ports:
+      - '80:80'
+    depends_on:
+      - cinema
+    restart: unless-stopped
+    container_name: nginx
+
+  redis:
+    image: redis:latest
+    ports:
+      - '6379:6379'
+    restart: unless-stopped
+    volumes:
+      - redis_data:/data
+    container_name: redis
+
+  celery:
+    build:
+      context: .
+    command: celery -A main worker -l INFO --pool=solo
+    depends_on:
+      - redis
+      - postgres
+      - cinema
+    restart: unless-stopped
+    environment:
+      <<: *environment-defaults
+    container_name: celery
+
+  celery-beat:
+    build:
+      context: .
+    command: celery -A main beat -l INFO
+    depends_on:
+      - redis
+      - postgres
+      - cinema
+    restart: unless-stopped
+    environment:
+      <<: *environment-defaults
+    container_name: celery-beat
+
+volumes:
+  static_volume:
+  media_volume:
+  postgres_data:
+  redis_data:
