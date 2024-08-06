@@ -13,6 +13,7 @@ scalable, reliable, and robust.
 - [Usage](#usage)
 - [Testing](#testing)
 - [Celery](#celery)
+- [Docker-compose](#docker-compose)
 
 ## Features
 - User authentication (login, logout, registration)
@@ -34,6 +35,7 @@ scalable, reliable, and robust.
 - psycopg2-binary (for PostgreSQL)
 - python-dotenv 1.0.1+ (for .env file)
 - pillow (for working with images)
+- Docker Desktop (for containerized deployment)
 
 ## Installation
 
@@ -102,3 +104,14 @@ python manage.py test api.tests
 celery -A main worker -l INFO --pool=solo (task runner)
 celery -A main beat -l INFO
 ```
+
+## Docker-compose
+Build and run the project using Docker:
+```bash
+docker-compose up --build  #start/build all containers
+docker ps                  #check processing images
+docker exec -it container_name_or_id /bin/sh #lets you open a shell session inside a running Docker container
+# for interactive command-line interaction and management tasks within that container's environment
+docker-compose down #Remove all containers
+```
+Stop all containers: Ctrl+C;
